@@ -24,8 +24,21 @@ export class DownloadCommand {
       .setDescription('Download a retro game from Myrient')
       .addStringOption(option =>
         option.setName('console')
-          .setDescription('Console system (e.g., nes, snes, n64)')
+          .setDescription('Console system')
           .setRequired(true)
+          .addChoices(
+            { name: '🎮 Game Boy', value: 'gb' },
+            { name: '🎨 Game Boy Color', value: 'gbc' },
+            { name: '⚡ Game Boy Advance', value: 'gba' },
+            { name: '🕹️ NES (Nintendo Entertainment System)', value: 'nes' },
+            { name: '🎯 SNES (Super Nintendo)', value: 'snes' },
+            { name: '🎮 Nintendo 64', value: 'n64' },
+            { name: '🦔 Genesis/Mega Drive', value: 'genesis' },
+            { name: '🎪 Master System', value: 'mastersystem' },
+            { name: '🪐 Saturn', value: 'saturn' },
+            { name: '🌙 Dreamcast', value: 'dreamcast' },
+            { name: '💿 PlayStation', value: 'psx' }
+          )
       )
       .addStringOption(option =>
         option.setName('game')
