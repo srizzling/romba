@@ -1,0 +1,43 @@
+# Node modules
+node_modules/
+
+# Build output (will be copied from builder stage)
+dist/
+
+# Development files
+.env
+.env.local
+*.log
+romba-db.json
+
+# Git
+.git/
+.gitignore
+
+# Documentation and configs
+README.md
+CONTRIBUTING.md
+.github/
+.vscode/
+.idea/
+
+# Tests
+tests/
+*.test.*
+vitest.config.ts
+
+# Downloads (will be created at runtime)
+downloads/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

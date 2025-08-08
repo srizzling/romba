@@ -147,33 +147,93 @@ pnpm test
 pnpm test:ui
 ```
 
-## 📦 Docker Support (Optional)
+## 🐳 Docker Support
 
-Create a `Dockerfile`:
+### Pre-built Images (Recommended)
 
-```dockerfile
-FROM node:20-alpine
+Docker images are automatically built and published to GitHub Container Registry on each release:
 
-WORKDIR /app
+```bash
+# Pull the latest version
+docker pull ghcr.io/srizzling/romba:latest
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
-# Install pnpm and dependencies
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN pnpm build
-
-# Create downloads directory
-RUN mkdir -p downloads
-
-# Start the bot
-CMD ["pnpm", "start"]
+# Or pull a specific version
+docker pull ghcr.io/srizzling/romba:v1.1.0
 ```
+
+### Quick Start with Docker
+
+1. **Create environment file**:
+   ```bash
+   # Create .env file
+   echo "DISCORD_TOKEN=your_bot_token_here" > .env
+   ```
+
+2. **Run the container**:
+   ```bash
+   docker run -d \
+     --name romba-bot \
+     --env-file .env \
+     -v $(pwd)/downloads:/app/downloads \
+     -v $(pwd)/romba-data:/app/romba-data \
+     --restart unless-stopped \
+     ghcr.io/srizzling/romba:latest
+   ```
+
+3. **View logs**:
+   ```bash
+   docker logs -f romba-bot
+   ```
+
+### Docker Compose
+
+Create a `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+services:
+  romba:
+    image: ghcr.io/srizzling/romba:latest
+    container_name: romba-bot
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DOWNLOAD_PATH=/app/downloads
+    volumes:
+      - ./downloads:/app/downloads
+      - ./romba-data:/app/romba-data
+    # Optional: Health check endpoint
+    # ports:
+    #   - "8080:8080"
+```
+
+Then run:
+```bash
+docker-compose up -d
+```
+
+### Building Your Own Image
+
+If you want to build locally:
+
+```bash
+# Build the image
+docker build -t romba-bot .
+
+# Run locally built image
+docker run -d \
+  --name romba-bot \
+  --env-file .env \
+  -v $(pwd)/downloads:/app/downloads \
+  romba-bot
+```
+
+### Available Tags
+
+- `ghcr.io/srizzling/romba:latest` - Latest stable release
+- `ghcr.io/srizzling/romba:v1.1.0` - Specific version
+- `ghcr.io/srizzling/romba:v1` - Latest v1.x release
+- `ghcr.io/srizzling/romba:v1.1` - Latest v1.1.x release
 
 ## 🔧 Configuration
 

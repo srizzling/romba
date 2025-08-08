@@ -1,7 +1,26 @@
 version: 2
 
+# Skip binary builds since this is a Node.js project
 builds:
   - skip: true
+
+# Docker image configuration
+dockers:
+  - image_templates:
+      - "ghcr.io/srizzling/romba:latest"
+      - "ghcr.io/srizzling/romba:{{ .Tag }}"
+      - "ghcr.io/srizzling/romba:v{{ .Major }}"
+      - "ghcr.io/srizzling/romba:v{{ .Major }}.{{ .Minor }}"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/srizzling/romba"
+      - "--label=org.opencontainers.image.description=Discord bot for downloading retro games from Myrient"
+      - "--label=org.opencontainers.image.licenses=MIT"
 
 archives:
   - format: tar.gz
@@ -18,6 +37,10 @@ archives:
       - "*.yml"
       - "*.yaml"
       - "Makefile"
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker-compose.yml"
+      - ".env.example"
       - "src/**/*"
       - "dist/**/*"
       - ".github/**/*"
