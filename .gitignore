@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# Database
+romba-db.json
+
+# Logs
+*.log
+
+# Downloads
+downloads/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Discord MCP server (embedded repo)
+discord-mcp-server/

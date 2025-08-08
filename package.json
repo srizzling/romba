@@ -1,0 +1,42 @@
+{
+  "name": "romba-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for downloading retro games from Myrient",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "clean": "rm -rf dist",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "retro",
+    "games",
+    "myrient",
+    "romba"
+  ],
+  "author": "Claude & srizzling",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "discord.js": "^14.16.3",
+    "dotenv": "^17.2.1",
+    "fs-extra": "^11.2.0",
+    "lowdb": "^7.0.1",
+    "progress": "^2.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.9.0",
+    "@types/progress": "^2.0.7",
+    "husky": "^9.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
