@@ -261,3 +261,5 @@ This software is a **tool for managing downloads** from publicly available archi
 - Facilitate piracy
 
 Users must ensure they have the legal right to download and use any ROMs. The developers assume no responsibility for how this tool is used.
+# CI/CD Status
+Automated testing and releases are configured!
