@@ -9,8 +9,12 @@
     "dev": "ts-node src/index.ts",
     "clean": "rm -rf dist",
     "test": "vitest",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui", 
     "test:run": "vitest run",
+    "release": "pnpm run build && pnpm run test:run && git tag $(node -p \"require('./package.json').version\")",
+    "release:major": "npm version major && pnpm run release",
+    "release:minor": "npm version minor && pnpm run release", 
+    "release:patch": "npm version patch && pnpm run release",
     "prepare": "husky"
   },
   "keywords": [
