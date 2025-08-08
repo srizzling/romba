@@ -7,6 +7,7 @@ import * as ProgressBar from 'progress';
 
 export class DownloadService {
   private activeDownloads = new Map<string, AbortController>();
+  private notificationChannelId?: string;
   
   // ES-DE system name mapping for folder structure
   private readonly systemMapping: { [key: string]: string } = {

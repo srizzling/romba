@@ -11,7 +11,7 @@ import { MyrientService } from '../services/myrient.js';
 import { DatabaseService } from '../services/database.js';
 import { DownloadService } from '../services/downloader.js';
 
-export class DownloadCommand {
+export class MyrientCommand {
   constructor(
     private myrient: MyrientService,
     private db: DatabaseService,
@@ -20,7 +20,7 @@ export class DownloadCommand {
 
   getSlashCommand() {
     return new SlashCommandBuilder()
-      .setName('download')
+      .setName('my')
       .setDescription('Download a retro game from Myrient')
       .addStringOption(option =>
         option.setName('console')

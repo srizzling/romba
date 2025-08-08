@@ -10,9 +10,11 @@ import {
 } from 'discord.js';
 import dotenv from 'dotenv';
 import { MyrientService } from './services/myrient.js';
+import { VimmsService } from './services/vimms.js';
 import { DatabaseService } from './services/database.js';
 import { DownloadService } from './services/downloader.js';
-import { DownloadCommand } from './commands/download.js';
+import { MyrientCommand } from './commands/myrient.js';
+import { VimmsCommand } from './commands/vimms.js';
 import { QueueCommand } from './commands/queue.js';
 
 // Load environment variables
@@ -21,9 +23,11 @@ dotenv.config();
 class RombaBot {
   private client: Client;
   private myrient: MyrientService;
+  private vimms: VimmsService;
   private db: DatabaseService;
   private downloader: DownloadService;
-  private downloadCommand: DownloadCommand;
+  private downloadCommand: MyrientCommand;
+  private vimmsCommand: VimmsCommand;
   private queueCommand: QueueCommand;
 
   constructor() {
@@ -36,9 +40,11 @@ class RombaBot {
     });
 
     this.myrient = new MyrientService();
+    this.vimms = new VimmsService();
     this.db = new DatabaseService();
     this.downloader = new DownloadService(this.db);
-    this.downloadCommand = new DownloadCommand(this.myrient, this.db, this.downloader);
+    this.downloadCommand = new MyrientCommand(this.myrient, this.db, this.downloader);
+    this.vimmsCommand = new VimmsCommand(this.vimms, this.db, this.downloader);
     this.queueCommand = new QueueCommand(this.db, this.downloader);
 
     this.setupEventHandlers();
@@ -88,8 +94,11 @@ class RombaBot {
 
   private async handleSlashCommand(interaction: ChatInputCommandInteraction) {
     switch (interaction.commandName) {
-      case 'download':
+      case 'my':
         await this.downloadCommand.execute(interaction);
+        break;
+      case 'vm':
+        await this.vimmsCommand.execute(interaction);
         break;
       case 'queue':
         await this.queueCommand.execute(interaction);
@@ -142,6 +151,7 @@ class RombaBot {
 
     const commands = [
       this.downloadCommand.getSlashCommand(),
+      this.vimmsCommand.getSlashCommand(),
       this.queueCommand.getSlashCommand(),
       {
         name: 'ping',

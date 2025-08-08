@@ -3,6 +3,7 @@ export interface Game {
   url: string;
   size?: string;
   console: string;
+  vaultId?: string; // For Vimm's Lair vault IDs
 }
 
 export interface DownloadJob {
