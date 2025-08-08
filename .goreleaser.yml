@@ -1,0 +1,82 @@
+version: 2
+
+builds:
+  - skip: true
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      - "*.md"
+      - "*.json"
+      - "*.yml"
+      - "*.yaml"
+      - "Makefile"
+      - "src/**/*"
+      - "dist/**/*"
+      - ".github/**/*"
+      - "tests/**/*"
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+      - "^.*\\(wip\\).*$"
+  groups:
+    - title: '🎮 Features'
+      regexp: "^feat.*:"
+      order: 0
+    - title: '🐛 Bug Fixes'
+      regexp: "^fix.*:"
+      order: 1
+    - title: '📝 Documentation'
+      regexp: "^docs.*:"
+      order: 2
+    - title: '🔧 Maintenance'
+      regexp: "^(chore|ci|build|style|refactor|test).*:"
+      order: 3
+    - title: '📦 Dependencies'
+      regexp: "^(chore\\(deps\\)|deps).*:"
+      order: 4
+    - title: 'Other'
+      order: 999
+
+release:
+  prerelease: auto
+  mode: replace
+  header: |
+    ## 🤖 Romba Discord Bot - ROM Download Manager
+    
+    A self-hosted Discord bot for downloading retro games from Myrient archive. 
+    
+    ### ⚠️ Important Disclaimer
+    This bot is a **download manager tool only**. It does not host, include, or distribute any ROM files. 
+    All content is sourced from [Myrient](https://myrient.erista.me), a publicly available ROM archive.
+    
+    ### 🎯 Key Features in this Release
+    
+  footer: |
+    **Full Setup Guide**: [README.md](https://github.com/srizzling/romba/blob/{{ .Tag }}/README.md)
+    
+    **⚠️ Legal Notice**: This software is provided as-is without warranty. Users are responsible for 
+    complying with their local laws regarding ROM usage. Only use ROMs you legally own.
+    
+    ---
+    Built with ❤️ for retro gaming preservation
