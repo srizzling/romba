@@ -4,9 +4,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    pool: 'forks',
-  },
-  define: {
-    global: 'globalThis',
+    setupFiles: ['./tests/setup.ts'],
   }
 });
