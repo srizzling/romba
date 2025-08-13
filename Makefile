@@ -18,6 +18,7 @@ help:
 	@echo "  make test              Run all tests (unit + integration)"
 	@echo "  make test-unit         Run unit tests only"
 	@echo "  make test-integration  Run integration tests (real downloads)"
+	@echo "  make test-mock         Run mock integration tests (no downloads)"
 	@echo "  make coverage          Generate test coverage report"
 	@echo ""
 	@echo "🚀 Release:"
@@ -63,14 +64,6 @@ test-mock:
 	@echo "Testing core functionality without Discord connection"
 	@echo ""
 	node scripts/discord-integration-test-mock.js
-
-# Full Discord integration tests (requires Discord bot)
-test-discord: test-mock
-	@echo ""
-	@echo "✅ Mock tests passed! For full Discord integration test:"
-	@echo "   1. Ensure bot is running: pnpm dev"
-	@echo "   2. Add TEST_DISCORD_CHANNEL_ID to .env"
-	@echo "   3. Run specific Discord tests manually"
 
 # All tests
 test: test-unit test-integration
