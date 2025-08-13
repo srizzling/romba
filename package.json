@@ -1,6 +1,6 @@
 {
   "name": "romba-bot",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Discord bot for downloading retro games from Myrient",
   "main": "dist/index.js",
   "scripts": {
