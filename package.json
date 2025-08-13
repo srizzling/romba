@@ -8,7 +8,7 @@
     "build:dev": "node build.mjs --dev",
     "build:watch": "node build.mjs --watch",
     "start": "node dist/index.js",
-    "dev": "pnpm build:dev && node dist/index.js",
+    "dev": "tsx src/index.ts",
     "dev:watch": "nodemon",
     "clean": "rm -rf dist",
     "test": "vitest",
@@ -53,6 +53,7 @@
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.4",
     "typescript": "^5.6.3",
     "vitest": "^3.2.4"
   }

@@ -1,9 +1,9 @@
 {
   "watch": ["src"],
-  "ext": "ts,js,json",
-  "exec": "pnpm build:dev && node dist/index.js",
+  "ext": "ts,js,json", 
+  "exec": "tsx src/index.ts",
   "env": {
     "NODE_ENV": "development"
   },
-  "delay": 500
+  "delay": 100
 }
