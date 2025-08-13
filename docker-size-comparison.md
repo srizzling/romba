@@ -58,13 +58,43 @@ docker images | grep romba
 ```
 
 ### Production Usage:
+
+#### Docker Run (Manual):
 ```bash
-# Run optimized container
+# Run optimized container with proper volumes
 docker run -d \
   --name romba-bot \
+  --restart unless-stopped \
+  --user 1001:1001 \
   --env-file .env \
   -v $(pwd)/downloads:/app/downloads \
-  romba-optimized
+  -v $(pwd)/data:/app/data \
+  ghcr.io/srizzling/romba:latest
+```
+
+#### Docker Compose (Recommended):
+```bash
+# Create .env file
+echo "DISCORD_TOKEN=your_bot_token_here" > .env
+
+# Start with docker-compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f romba
+```
+
+#### Volume Structure:
+```
+Host Machine:
+├── downloads/          # ROM downloads (ES-DE structure)
+│   └── roms/
+│       ├── gb/         # Game Boy ROMs
+│       ├── gba/        # Game Boy Advance
+│       └── ...
+└── data/               # Bot persistent data
+    ├── romba-db.json   # Download queue & history
+    └── cache/          # Search cache
 ```
 
 ## Implementation Notes:

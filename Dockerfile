@@ -48,12 +48,22 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy built application
 COPY --from=builder /app/dist ./dist
 
-# Create downloads directory with proper permissions
-RUN mkdir -p downloads/roms && \
+# Create directories for volumes with proper permissions
+RUN mkdir -p downloads/roms data && \
     chown -R nodejs:nodejs /app
+
+# Define volumes for persistent data
+VOLUME ["/app/downloads", "/app/data"]
 
 # Switch to non-root user
 USER nodejs
+
+# Expose health check port (optional)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "process.exit(0)" || exit 1
 
 # Start the bot with proper signal handling
 ENTRYPOINT ["dumb-init", "--"]

@@ -5,6 +5,7 @@ services:
     image: ghcr.io/srizzling/romba:latest
     container_name: romba-bot
     restart: unless-stopped
+    
     environment:
       # Required: Your Discord bot token
       - DISCORD_TOKEN=${DISCORD_TOKEN}
@@ -14,22 +15,34 @@ services:
       - MAX_CONCURRENT_DOWNLOADS=3
       
     volumes:
-      # ROM downloads will be stored here
+      # ROM downloads (ES-DE compatible structure)
+      # Host: ./downloads → Container: /app/downloads
       - ./downloads:/app/downloads
       
-      # Bot database and configuration
-      - ./romba-data:/app/romba-data
+      # Bot database and persistent data  
+      # Host: ./data → Container: /app/data
+      - ./data:/app/data
       
-    # Uncomment if you want to access health check endpoint
+    # Health check endpoint (optional)
     # ports:
     #   - "8080:8080"
     
-    # Resource limits (optional)
+    # Resource limits (optimized for Discord bot)
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '0.5'
+          memory: 256M      # Reduced due to optimized image
+          cpus: '0.25'      # Bot is lightweight  
         reservations:
-          memory: 256M
-          cpus: '0.25'
+          memory: 128M
+          cpus: '0.1'
+          
+    # Ensure proper user permissions for volumes
+    user: "1001:1001"
+
+# Optional: Create named volumes for better management
+volumes:
+  downloads:
+    driver: local
+  data:
+    driver: local
