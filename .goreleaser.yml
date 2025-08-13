@@ -15,8 +15,9 @@ dockers:
     extra_files:
       - package.json
       - pnpm-lock.yaml
-      - src/
+      - src
       - .env.example
+      - tsconfig.json
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
