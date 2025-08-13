@@ -18,6 +18,7 @@ dockers:
       - src
       - .env.example
       - tsconfig.json
+      - build.mjs
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
