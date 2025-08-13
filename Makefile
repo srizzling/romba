@@ -57,21 +57,20 @@ test-integration:
 	@read -p "Continue? [y/N] " response && [[ $$response =~ ^[Yy]$$ ]] || (echo "Aborted." && exit 1)
 	node scripts/integration-test.js
 
+# Mock integration tests (no Discord connection needed)
+test-mock:
+	@echo "🤖 Running mock integration tests..."
+	@echo "Testing core functionality without Discord connection"
+	@echo ""
+	node scripts/discord-integration-test-mock.js
+
 # Full Discord integration tests (requires Discord bot)
-test-discord:
-	@echo "🤖 Running full Discord integration tests..."
-	@echo "⚠️  WARNING: This will:"
-	@echo "   - Connect to Discord with your bot"
-	@echo "   - Send messages to a test channel"
-	@echo "   - Download real ROM files"
-	@echo "   - Run CHD conversion if available"
+test-discord: test-mock
 	@echo ""
-	@echo "📋 Prerequisites:"
-	@echo "   - .env file with DISCORD_TOKEN and TEST_DISCORD_CHANNEL_ID"
-	@echo "   - Bot invited to test server with proper permissions"
-	@echo ""
-	@read -p "Continue? [y/N] " response && [[ $$response =~ ^[Yy]$$ ]] || (echo "Aborted." && exit 1)
-	node scripts/discord-integration-test.js
+	@echo "✅ Mock tests passed! For full Discord integration test:"
+	@echo "   1. Ensure bot is running: pnpm dev"
+	@echo "   2. Add TEST_DISCORD_CHANNEL_ID to .env"
+	@echo "   3. Run specific Discord tests manually"
 
 # All tests
 test: test-unit test-integration

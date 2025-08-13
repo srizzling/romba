@@ -146,13 +146,16 @@ class DiscordIntegrationTester {
     
     const channel = await this.client.channels.fetch(process.env.TEST_DISCORD_CHANNEL_ID);
     
-    // Import the actual bot command handler
-    const { DownloadCommand } = await import('../src/commands/download.js');
-    const { MyrientService } = await import('../src/services/myrient.js');
-    const { VimmsService } = await import('../src/services/vimms.js');
-    const { DatabaseService } = await import('../src/services/database.js');
-    const { DownloadService } = await import('../src/services/downloader.js');
-    const { CacheService } = await import('../src/services/cache.js');
+    // Use dynamic imports to load TypeScript files via tsx
+    // Note: This requires the test to be run with tsx or after TypeScript compilation
+    try {
+      // Try to import from TypeScript source files
+      const { DownloadCommand } = await import('../src/commands/download.ts');
+      const { MyrientService } = await import('../src/services/myrient.ts');
+      const { VimmsService } = await import('../src/services/vimms.ts');
+      const { DatabaseService } = await import('../src/services/database.ts');
+      const { DownloadService } = await import('../src/services/downloader.ts');
+      const { CacheService } = await import('../src/services/cache.ts');
     
     // Initialize services
     const cache = new CacheService();
