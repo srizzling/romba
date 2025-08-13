@@ -33,8 +33,12 @@ RUN corepack enable pnpm && \
 # Final production stage - optimized minimal image
 FROM node:20-alpine AS production
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install system dependencies:
+# - dumb-init: proper signal handling in containers
+# - mame-tools: provides chdman for CHD (Compressed Hunks of Data) conversion
+#   CHD is MAME's compression format that significantly reduces CD-ROM image sizes
+#   for systems like PlayStation, PS2, Saturn, Dreamcast, SegaCD
+RUN apk add --no-cache dumb-init mame-tools
 
 # Create app user and group
 RUN addgroup -g 1001 -S nodejs && \

@@ -17,6 +17,7 @@ A high-performance, self-hosted Discord bot for downloading retro games from mul
 - **🚫 Smart Filtering**: Automatically excludes demo, beta, and test ROMs
 - **📄 Pagination**: Browse through large search results with navigation
 - **⏬ Download Queue**: Manage multiple downloads with progress tracking
+- **💾 CHD Conversion**: Automatic compression for CD-based systems (PS1, PS2, Saturn, Dreamcast)
 
 ### ⚡ **Performance & Development**
 - **🚀 Ultra-Fast Builds**: ~29ms compilation with esbuild (100x faster than tsc)
@@ -113,6 +114,29 @@ downloads/
 ```
 
 This structure is compatible with EmulationStation Desktop Edition (ES-DE) and most retro gaming frontends.
+
+## 💾 CHD Conversion
+
+The bot automatically compresses CD-based ROM images to CHD (Compressed Hunks of Data) format for significant space savings:
+
+### **Supported Systems**
+- **PlayStation (PSX)**: .iso, .bin/cue → .chd
+- **PlayStation 2 (PS2)**: .iso, .bin/cue → .chd  
+- **Sega Saturn**: .iso, .bin/cue → .chd
+- **Sega Dreamcast**: .iso, .bin/cue → .chd
+- **Sega CD**: .iso, .bin/cue → .chd
+
+### **Benefits**
+- **🗜️ Space Savings**: Typically 30-50% reduction in file size
+- **🔧 Emulator Compatible**: Supported by RetroArch, PCSX2, Redream, and more
+- **🤖 Automatic**: No manual intervention required
+- **📊 Progress Tracking**: Real-time compression progress in Discord
+
+### **Technical Details**
+- Uses MAME's `chdman` tool for industry-standard compression
+- Preserves all track and audio data
+- Docker images include `chdman` by default
+- Original files can optionally be kept or removed after conversion
 
 ## 🔄 Complete Workflow
 
@@ -273,6 +297,7 @@ docker pull ghcr.io/srizzling/romba:v1.3.0
 - **📦 Minimal footprint**: ~200MB+ smaller than standard builds
 - **🔒 Security-first**: Non-root user (UID 1001), minimal attack surface
 - **⚡ Fast startup**: No unnecessary package managers in production
+- **💾 CHD Support**: Built-in `chdman` for automatic CD-ROM compression
 
 ### Quick Start with Docker
 
@@ -323,6 +348,7 @@ services:
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DOWNLOAD_PATH=/app/downloads
+      # CHD conversion automatically enabled (chdman included)
     volumes:
       - ./downloads:/app/downloads
       - ./romba-data:/app/romba-data

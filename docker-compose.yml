@@ -14,6 +14,10 @@ services:
       - DOWNLOAD_PATH=/app/downloads
       - MAX_CONCURRENT_DOWNLOADS=3
       
+      # CHD conversion is automatically enabled (chdman included in image)
+      # ROMs for CD-based systems (PS1, PS2, Saturn, Dreamcast, SegaCD) 
+      # will be automatically compressed to CHD format to save space
+      
     volumes:
       # ROM downloads (ES-DE compatible structure)
       # Host: ./downloads → Container: /app/downloads
