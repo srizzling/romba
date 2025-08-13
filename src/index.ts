@@ -13,8 +13,7 @@ import { MyrientService } from './services/myrient.js';
 import { VimmsService } from './services/vimms.js';
 import { DatabaseService } from './services/database.js';
 import { DownloadService } from './services/downloader.js';
-import { MyrientCommand } from './commands/myrient.js';
-import { VimmsCommand } from './commands/vimms.js';
+import { DownloadCommand } from './commands/download.js';
 import { QueueCommand } from './commands/queue.js';
 
 // Load environment variables
@@ -26,8 +25,7 @@ class RombaBot {
   private vimms: VimmsService;
   private db: DatabaseService;
   private downloader: DownloadService;
-  private downloadCommand: MyrientCommand;
-  private vimmsCommand: VimmsCommand;
+  private downloadCommand: DownloadCommand;
   private queueCommand: QueueCommand;
 
   constructor() {
@@ -43,8 +41,7 @@ class RombaBot {
     this.vimms = new VimmsService();
     this.db = new DatabaseService();
     this.downloader = new DownloadService(this.db);
-    this.downloadCommand = new MyrientCommand(this.myrient, this.db, this.downloader);
-    this.vimmsCommand = new VimmsCommand(this.vimms, this.db, this.downloader);
+    this.downloadCommand = new DownloadCommand(this.myrient, this.vimms, this.db, this.downloader);
     this.queueCommand = new QueueCommand(this.db, this.downloader);
 
     this.setupEventHandlers();
@@ -57,6 +54,9 @@ class RombaBot {
       // Initialize database
       await this.db.init();
       
+      // Set Discord client for notifications
+      this.downloader.setDiscordClient(this.client);
+      
       // Register slash commands
       await this.registerCommands();
       
@@ -64,6 +64,23 @@ class RombaBot {
       setInterval(() => {
         this.downloader.processQueue();
       }, 30000);
+      
+      // Clean up cache daily
+      setInterval(() => {
+        // Clean up expired cache entries at 2 AM daily
+        const now = new Date();
+        if (now.getHours() === 2 && now.getMinutes() === 0) {
+          console.log('🧹 Starting daily cache cleanup...');
+          Promise.all([
+            this.myrient['cache'].cleanup(),
+            this.vimms['cache'].cleanup()
+          ]).then(([myrientDeleted, vimmsDeleted]) => {
+            console.log(`🧹 Cache cleanup completed: ${myrientDeleted + vimmsDeleted} entries deleted`);
+          }).catch(error => {
+            console.error('Cache cleanup failed:', error);
+          });
+        }
+      }, 60000); // Check every minute
     });
 
     this.client.on(Events.InteractionCreate, async (interaction) => {
@@ -94,11 +111,8 @@ class RombaBot {
 
   private async handleSlashCommand(interaction: ChatInputCommandInteraction) {
     switch (interaction.commandName) {
-      case 'my':
+      case 'download':
         await this.downloadCommand.execute(interaction);
-        break;
-      case 'vm':
-        await this.vimmsCommand.execute(interaction);
         break;
       case 'queue':
         await this.queueCommand.execute(interaction);
@@ -151,7 +165,6 @@ class RombaBot {
 
     const commands = [
       this.downloadCommand.getSlashCommand(),
-      this.vimmsCommand.getSlashCommand(),
       this.queueCommand.getSlashCommand(),
       {
         name: 'ping',

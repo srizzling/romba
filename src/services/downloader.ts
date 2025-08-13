@@ -8,12 +8,15 @@ import * as ProgressBar from 'progress';
 export class DownloadService {
   private activeDownloads = new Map<string, AbortController>();
   private notificationChannelId?: string;
+  private discordClient: any; // Will be injected from main bot
   
   // ES-DE system name mapping for folder structure
   private readonly systemMapping: { [key: string]: string } = {
     'No-Intro/Nintendo - Game Boy': 'gb',
     'No-Intro/Nintendo - Game Boy Color': 'gbc', 
     'No-Intro/Nintendo - Game Boy Advance': 'gba',
+    'No-Intro/Nintendo - Nintendo DS': 'nds',
+    'No-Intro/Nintendo - Nintendo 3DS': '3ds',
     'No-Intro/Nintendo - Nintendo Entertainment System': 'nes',
     'No-Intro/Nintendo - Super Nintendo Entertainment System': 'snes',
     'No-Intro/Nintendo - Nintendo 64': 'n64',
@@ -23,10 +26,42 @@ export class DownloadService {
     'No-Intro/Sega - Dreamcast': 'dreamcast',
     'Redump/Sony - PlayStation': 'psx',
     'Redump/Sony - PlayStation 2': 'ps2',
-    'Redump/Sony - PlayStation Portable': 'psp'
+    'Redump/Sony - PlayStation 3': 'ps3',
+    'Redump/Sony - PlayStation Portable': 'psp',
+    // Vimm's Lair mappings (since they use different naming)
+    'GB': 'gb',
+    'GBC': 'gbc',
+    'GBA': 'gba',
+    'DS': 'nds',
+    '3DS': '3ds',
+    'NES': 'nes',
+    'SNES': 'snes',
+    'N64': 'n64',
+    'Genesis': 'megadrive',
+    'SMS': 'mastersystem',
+    'Saturn': 'saturn',
+    'Dreamcast': 'dreamcast',
+    'PS1': 'psx',
+    'PS2': 'ps2',
+    'PS3': 'ps3',
+    'PSP': 'psp'
   };
   
   constructor(private db: DatabaseService) {}
+  
+  /**
+   * Set Discord client for notifications
+   */
+  setDiscordClient(client: any) {
+    this.discordClient = client;
+  }
+  
+  /**
+   * Set notification channel ID
+   */
+  setNotificationChannel(channelId: string) {
+    this.notificationChannelId = channelId;
+  }
 
   /**
    * Start downloading a job
@@ -99,6 +134,19 @@ export class DownloadService {
       });
 
       this.activeDownloads.delete(job.id);
+      
+      // Send Discord notification if client is available
+      if (this.discordClient && this.notificationChannelId) {
+        try {
+          const channel = await this.discordClient.channels.fetch(this.notificationChannelId);
+          if (channel) {
+            const systemName = this.systemMapping[job.game.console] || job.game.console.toLowerCase();
+            await channel.send(`✅ **${job.game.name}** download completed!\n📁 Saved to: \`roms/${systemName}/\``);
+          }
+        } catch (error) {
+          console.error('Failed to send completion notification:', error);
+        }
+      }
 
     } catch (error) {
       // Mark as failed

@@ -18,6 +18,9 @@ romba-db.json
 # Downloads
 downloads/
 
+# Cache
+cache/
+
 # macOS
 .DS_Store
 

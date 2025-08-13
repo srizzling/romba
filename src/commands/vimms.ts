@@ -30,6 +30,8 @@ export class VimmsCommand {
             { name: '🎮 Game Boy', value: 'gameboy' },
             { name: '🎨 Game Boy Color', value: 'gbc' },
             { name: '⚡ Game Boy Advance', value: 'gba' },
+            { name: '📱 Nintendo DS', value: 'ds' },
+            { name: '📱 Nintendo 3DS', value: '3ds' },
             { name: '🕹️ NES (Nintendo Entertainment System)', value: 'nes' },
             { name: '🎯 SNES (Super Nintendo)', value: 'snes' },
             { name: '🎮 Nintendo 64', value: 'n64' },
@@ -37,7 +39,10 @@ export class VimmsCommand {
             { name: '🎪 Master System', value: 'mastersystem' },
             { name: '🪐 Saturn', value: 'saturn' },
             { name: '🌙 Dreamcast', value: 'dreamcast' },
-            { name: '💿 PlayStation', value: 'psx' }
+            { name: '💿 PlayStation', value: 'psx' },
+            { name: '💽 PlayStation 2', value: 'ps2' },
+            { name: '💾 PlayStation 3', value: 'ps3' },
+            { name: '📀 PlayStation Portable', value: 'psp' }
           )
       )
       .addStringOption(option =>

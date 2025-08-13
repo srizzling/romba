@@ -101,6 +101,89 @@ downloads/
 
 This structure is compatible with EmulationStation Desktop Edition (ES-DE) and most retro gaming frontends.
 
+## 🔄 Complete Workflow
+
+Here's the complete workflow from Discord command to handheld gaming:
+
+```mermaid
+flowchart TD
+    A[📱 Discord Command] --> B{Choose Source}
+    B -->|Fast & Reliable| C[/my snes mario]
+    B -->|Alternative Source| D[/vm snes mario]
+    
+    C --> E[🔍 Search Myrient]
+    D --> F[🏛️ Search Vimm's Lair]
+    
+    E --> G[📋 Interactive Selection]
+    F --> G
+    
+    G --> H[⏳ Queue Download]
+    H --> I[📥 Download ROM]
+    
+    I --> J[💾 Save to Server]
+    J --> K[📁 downloads/roms/snes/mario.zip]
+    
+    K --> L[🔄 Syncthing Auto-Sync]
+    L --> M[📱 Android /sdcard/ROMs/snes/]
+    
+    M --> N[🎮 Emulator Ready]
+    N --> O[🕹️ Game Time!]
+    
+    I --> P[📨 Discord Notification]
+    P --> Q[✅ "Mario downloaded!"]
+    
+    style A fill:#7289da
+    style K fill:#43a047
+    style M fill:#ff9800
+    style O fill:#e91e63
+```
+
+### 📡 Sync Setup Guide
+
+**1. Server Setup (Where bot runs):**
+```bash
+# Bot downloads here
+/home/user/romba/downloads/roms/
+├── gb/           # Game Boy ROMs
+├── gba/          # Game Boy Advance ROMs  
+├── nes/          # Nintendo ROMs
+├── snes/         # Super Nintendo ROMs
+└── ...
+```
+
+**2. Syncthing Configuration:**
+```yaml
+Server Side:
+  - Folder: /home/user/romba/downloads/roms
+  - Send Only: true
+  - Auto Accept: true
+
+Android Side:  
+  - Folder: /sdcard/ROMs
+  - Receive Only: true
+  - Auto Accept: true
+```
+
+**3. Android Emulator Setup:**
+- **RetroArch**: Point to `/sdcard/ROMs/`
+- **MyBoy! (GBA)**: Scan `/sdcard/ROMs/gba/`
+- **John GBAC (GB/GBC)**: Scan `/sdcard/ROMs/gb/` & `/sdcard/ROMs/gbc/`
+
+### 🎯 Usage Patterns
+
+**Quick Downloads:**
+```
+/my gb tetris          # Fast Myrient search
+/vm nes zelda          # Vimm's as backup
+/queue                 # Check progress
+```
+
+**Batch Downloads:**
+1. Queue multiple games from Discord
+2. Let bot download overnight
+3. Wake up → ROMs synced to handheld
+4. Instant gaming! 🎮
+
 ## 🛠️ Development
 
 ### Running in Development

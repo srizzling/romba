@@ -4,6 +4,8 @@ export interface Game {
   size?: string;
   console: string;
   vaultId?: string; // For Vimm's Lair vault IDs
+  region?: string; // For region information (USA, Europe, etc.)
+  version?: string; // For version information (1.0, 1.1, etc.)
 }
 
 export interface DownloadJob {

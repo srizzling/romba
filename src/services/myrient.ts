@@ -1,10 +1,12 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { Game, MyrientDirectory, SearchResult } from '../types/index.js';
+import { CacheService } from './cache.js';
 
 const MYRIENT_BASE_URL = 'https://myrient.erista.me';
 
 export class MyrientService {
+  private cache = new CacheService();
   
   /**
    * Get available console systems
@@ -45,6 +47,12 @@ export class MyrientService {
    * Search for games in a specific console directory
    */
   async searchGames(consoleSystem: string, searchTerm: string): Promise<SearchResult> {
+    // Check cache first
+    const cachedResult = await this.cache.get('myrient', consoleSystem, searchTerm);
+    if (cachedResult) {
+      return cachedResult;
+    }
+    
     try {
       // Map common console names to actual Myrient paths
       const consoleMapping: { [key: string]: string } = {
@@ -98,12 +106,17 @@ export class MyrientService {
         }
       });
       
-      return {
+      const result = {
         games: games.slice(0, 10), // Limit to 10 results
         totalFound: games.length,
         searchTerm,
         console: mappedPath
       };
+      
+      // Cache the result
+      await this.cache.set('myrient', consoleSystem, searchTerm, result);
+      
+      return result;
     } catch (error: any) {
       console.error(`Error searching games for ${consoleSystem}:`, error);
       const consoleMapping: { [key: string]: string } = {
