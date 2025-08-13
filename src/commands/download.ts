@@ -133,9 +133,12 @@ export class DownloadCommand {
           const versionInfo = game.version && game.version !== '1.0' ? ` v${game.version}` : '';
           const sizeInfo = game.size && game.size !== 'Unknown' ? ` - ${game.size}` : '';
           
+          // Add download URL if available
+          const downloadUrl = game.url ? `\n🔗 [Direct Download](${game.url})` : '';
+          
           embed.addFields({
             name: `${gameNum}. ${game.name}${regionInfo}${versionInfo}`,
-            value: `📦 Source: ${game.source}${sizeInfo}`,
+            value: `📦 Source: ${game.source}${sizeInfo}${downloadUrl}`,
             inline: false
           });
         });

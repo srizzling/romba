@@ -3,12 +3,14 @@ import fs from 'fs-extra';
 import path from 'path';
 import { DownloadJob } from '../types/index.js';
 import { DatabaseService } from './database.js';
+import { CHDConverterService } from './chd-converter.js';
 import * as ProgressBar from 'progress';
 
 export class DownloadService {
   private activeDownloads = new Map<string, AbortController>();
   private notificationChannelId?: string;
   private discordClient: any; // Will be injected from main bot
+  private chdConverter = new CHDConverterService();
   
   // ES-DE system name mapping for folder structure
   private readonly systemMapping: { [key: string]: string } = {
@@ -125,12 +127,48 @@ export class DownloadService {
         response.data.on('error', reject);
       });
 
+      // Check if CHD conversion is needed  
+      let finalFilePath = filePath;
+      let conversionInfo = '';
+
+      if (this.chdConverter.shouldConvertToCHD(filePath, systemName)) {
+        console.log(`🔄 Converting ${job.game.name} to CHD format...`);
+        
+        // Update status to indicate conversion
+        await this.db.updateDownload(job.id, {
+          status: 'downloading', // Keep as downloading during conversion
+          progress: 95,
+          filePath: filePath + ' (Converting to CHD...)'
+        });
+
+        const conversionResult = await this.chdConverter.convertToCHD(filePath);
+        
+        if (conversionResult.success && conversionResult.outputPath) {
+          finalFilePath = conversionResult.outputPath;
+          
+          // Clean up original files (keep them for safety by default)
+          await this.chdConverter.cleanupOriginalFiles(filePath, false);
+          
+          // Format conversion info
+          if (conversionResult.compressionRatio) {
+            const originalSize = conversionResult.originalSize ? this.chdConverter.formatFileSize(conversionResult.originalSize) : 'Unknown';
+            const compressedSize = conversionResult.compressedSize ? this.chdConverter.formatFileSize(conversionResult.compressedSize) : 'Unknown';
+            conversionInfo = `\n💾 **CHD Conversion**: ${originalSize} → ${compressedSize} (${conversionResult.compressionRatio}% reduction)`;
+          } else {
+            conversionInfo = '\n💾 **Converted to CHD format**';
+          }
+        } else {
+          console.warn(`⚠️ CHD conversion failed for ${job.game.name}: ${conversionResult.error}`);
+          conversionInfo = '\n⚠️ **CHD conversion failed, keeping original format**';
+        }
+      }
+
       // Mark as completed
       await this.db.updateDownload(job.id, {
         status: 'completed',
         progress: 100,
         completedTime: new Date(),
-        filePath
+        filePath: finalFilePath
       });
 
       this.activeDownloads.delete(job.id);
@@ -140,8 +178,7 @@ export class DownloadService {
         try {
           const channel = await this.discordClient.channels.fetch(this.notificationChannelId);
           if (channel) {
-            const systemName = this.systemMapping[job.game.console] || job.game.console.toLowerCase();
-            await channel.send(`✅ **${job.game.name}** download completed!\n📁 Saved to: \`roms/${systemName}/\``);
+            await channel.send(`✅ **${job.game.name}** download completed!${conversionInfo}\n📁 Saved to: \`roms/${systemName}/\``);
           }
         } catch (error) {
           console.error('Failed to send completion notification:', error);
