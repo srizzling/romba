@@ -12,6 +12,11 @@ dockers:
       - "ghcr.io/srizzling/romba:v{{ .Major }}"
       - "ghcr.io/srizzling/romba:v{{ .Major }}.{{ .Minor }}"
     dockerfile: Dockerfile
+    extra_files:
+      - package.json
+      - pnpm-lock.yaml
+      - src/
+      - .env.example
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
