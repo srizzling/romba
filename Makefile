@@ -67,9 +67,8 @@ test-discord:
 	@echo "   - Run CHD conversion if available"
 	@echo ""
 	@echo "📋 Prerequisites:"
-	@echo "   - DISCORD_TOKEN environment variable"
-	@echo "   - TEST_DISCORD_CHANNEL_ID environment variable"
-	@echo "   - Bot invited to test server with permissions"
+	@echo "   - .env file with DISCORD_TOKEN and TEST_DISCORD_CHANNEL_ID"
+	@echo "   - Bot invited to test server with proper permissions"
 	@echo ""
 	@read -p "Continue? [y/N] " response && [[ $$response =~ ^[Yy]$$ ]] || (echo "Aborted." && exit 1)
 	node scripts/discord-integration-test.js

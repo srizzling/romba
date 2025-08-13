@@ -10,15 +10,17 @@
  * - Run CHD conversion if available
  * 
  * Prerequisites:
- * - DISCORD_TOKEN in environment
- * - TEST_DISCORD_CHANNEL_ID in environment  
+ * - .env file with DISCORD_TOKEN and TEST_DISCORD_CHANNEL_ID
  * - Bot must be in the test server/channel
  * 
- * Usage: DISCORD_TOKEN=xxx TEST_DISCORD_CHANNEL_ID=xxx node scripts/discord-integration-test.js
+ * Usage: make test-discord (automatically loads from .env)
  */
 
 const fs = require('fs-extra');
 const path = require('path');
+
+// Load environment variables from .env file
+require('dotenv').config();
 
 const TEST_DIR = path.join(process.cwd(), 'discord-integration-test');
 const REQUIRED_ENV = ['DISCORD_TOKEN', 'TEST_DISCORD_CHANNEL_ID'];
@@ -264,12 +266,17 @@ if (require.main === module) {
     console.log('🤖 Discord Integration Test for Romba Bot');
     console.log('==========================================');
     console.log('');
-    console.log('This test requires Discord credentials:');
+    console.log('❌ Missing required environment variables!');
     console.log('');
-    console.log('Usage:');
-    console.log('  DISCORD_TOKEN=your_token_here \\\\');
-    console.log('  TEST_DISCORD_CHANNEL_ID=your_channel_id \\\\');
-    console.log('  node scripts/discord-integration-test.js');
+    console.log('📋 Setup:');
+    console.log('   1. Copy .env.example to .env');
+    console.log('   2. Add your DISCORD_TOKEN');
+    console.log('   3. Add your TEST_DISCORD_CHANNEL_ID');
+    console.log('   4. Run: make test-discord');
+    console.log('');
+    console.log('💡 To get channel ID:');
+    console.log('   Discord → Settings → Advanced → Developer Mode (enable)');
+    console.log('   Then: Server → Channel → Right-click → Copy ID');
     console.log('');
     console.log('⚠️  WARNING: This will:');
     console.log('   - Connect to Discord with your bot');
@@ -277,11 +284,9 @@ if (require.main === module) {
     console.log('   - Download real ROM files');
     console.log('   - Run CHD conversion if available');
     console.log('');
-    console.log('📋 Setup:');
-    console.log('   1. Create a test Discord server/channel');
-    console.log('   2. Invite your bot with proper permissions');
-    console.log('   3. Get the channel ID (Developer Mode → Right-click → Copy ID)');
-    console.log('   4. Run this script with the credentials');
+    console.log('Example .env:');
+    console.log('   DISCORD_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OTA...');
+    console.log('   TEST_DISCORD_CHANNEL_ID=987654321098765432');
     process.exit(1);
   }
 
