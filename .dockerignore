@@ -1,32 +1,46 @@
-# Node modules
+# Dependencies
 node_modules/
+npm-debug.log*
+pnpm-debug.log*
 
 # Build output (will be copied from builder stage)
 dist/
 
-# Development files
-.env
-.env.local
+# Environment and runtime files
+.env*
 *.log
 romba-db.json
+cache/
 
-# Git
+# Git and version control
 .git/
 .gitignore
 
-# Documentation and configs
+# Documentation
 README.md
-CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+*.md
 .github/
+
+# Development tools
 .vscode/
 .idea/
+.eslintrc*
+.prettierrc*
 
 # Tests
 tests/
 *.test.*
-vitest.config.ts
+*.spec.*
+vitest.config.*
 
-# Downloads (will be created at runtime)
+# Experimental and benchmark files  
+benchmark*.mjs
+build-*.mjs
+ultimate-benchmark.mjs
+
+# Runtime directories (created by container)
 downloads/
 
 # OS generated files
@@ -41,3 +55,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+*.swp
+*~
+
+# Docker files (not needed in build context)
+Dockerfile*
+docker-compose*
